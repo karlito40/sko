@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 import { TimelineMax } from 'gsap/all';
 import LayoutGame from '../components/LayoutGame';
 import SceneSplashScreen from '../scenes/SceneSplashScreen';
@@ -11,68 +11,62 @@ import SceneGame from '../scenes/SceneGame';
 import store from '../store';
 import { game as gameSocket } from '../socket';
 
+let curtainLayer$;
+let tl;
 let scene = {
-  name: undefined,
-  key: undefined,
+  Component: undefined,
   ready: false
 };
 
-let sceneReady = false;
-let curtainLayer$;
-let tl;
-
-$: if (scene.name === SceneRegisterUser && $store.me) {
+$: if (scene.Component === SceneRegisterUser && $store.me) {
   goTo(SceneMatchMaking);
 }
 
-$: if (scene.name !== SceneGame && $store.game && !$store.game.completedAt) {
+$: if (scene.Component !== SceneGame && $store.game && !$store.game.completedAt) {
   goTo(SceneGame);
 }
 
-function goTo(nextScene) {
+function onComplete() {
+  // console.log('on complete')
+  if(scene.Component === SceneSplashScreen) {
+    goTo(SceneRegisterUser)
+  }
+
+  if(scene.Component === SceneGame) {
+    goTo(SceneEndSlide);
+    // goTo(SceneGame);
+  }
+  
+  if(scene.Component === SceneEndSlide) {
+    goTo(SceneThanks);
+  }
+}
+
+function goTo(nextComponent) {
   scene.ready = false;
   if(tl) {
     tl.kill();
   }
   
-  const leaveDuration = scene.name ? 0.6 : 0;
+  const leaveDuration = scene.Component ? 0.6 : 0;
   tl = new TimelineMax();
   tl
     .to(curtainLayer$, leaveDuration, { opacity: 1 })
     .call(() => {
-      // if(scene.name === Game) {
-      //   tl.pause();
-      //   gameSocket.leave(() => {
-      //     store.leaveGame();
-      //     console.log('nextScene', nextScene);
-      //     scene.name = nextScene
-      //     tl.play();
-      //   });
-      // } else {
-      //   scene.name = nextScene
-      // }
-      scene.name = nextScene;
+      if(scene.Component === nextComponent) {
+        scene.Component = undefined;
+        tick().then(() => {
+          scene.Component = nextComponent;
+        });
+      } else {
+        scene.Component = nextComponent;
+      }
     })
     .to(curtainLayer$, 0.6, { opacity: 0 })
     .call(() => {
       scene.ready = true;
       tl = null
     });
-}
-
-function onComplete() {
-  // console.log('on complete')
-  if(scene.name === SceneSplashScreen) {
-    goTo(SceneRegisterUser)
-  }
-
-  if(scene.name === SceneGame) {
-    goTo(SceneEndSlide);
-  }
-  
-  if(scene.name === SceneEndSlide) {
-    goTo(SceneThanks);
-  }
 }
 
 onMount(() => goTo(SceneSplashScreen));
@@ -84,9 +78,9 @@ onMount(() => goTo(SceneSplashScreen));
 
 <div class="RouteHome">
   <LayoutGame>
-    {#if scene.name}
+    {#if scene.Component}
       <svelte:component 
-        this={scene.name} 
+        this={scene.Component} 
         ready={scene.ready}
         on:complete={onComplete}
       />

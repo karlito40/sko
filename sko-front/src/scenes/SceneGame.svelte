@@ -68,11 +68,15 @@ function addAttackListener() {
 }
 
 function removeAttackListener() {
+  console.log('- removeAttackListener')
   document.removeEventListener('mousedown', gameSocket.attack);
   document.removeEventListener('keydown', gameSocket.attack);
 }
 
-onDestroy(removeAttackListener);
+onDestroy(() => {
+  console.log('destroy !!');
+  removeAttackListener();
+});
 
 function startScenario () {
   tl = new TimelineMax();
@@ -125,6 +129,7 @@ function startScenario () {
     .to(frontLayer$.querySelectorAll('.sign.no-tie'), 0.2, { height: 0, ease: Linear.easeNone }, 'next-round+=0.2')
     .to(frontLayer$.querySelectorAll('.sign.winner'), 0.3, { height: 0, ease: Linear.easeNone }, 'next-round+=0.2')
     .call(() => {
+      console.log('dispatch complete');
       dispatch('complete');
     }, null, null, '+=0.4')
 }
