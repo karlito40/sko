@@ -1,0 +1,29 @@
+/* @font-face {
+  font-family: "Pixel";
+  src: url("./pixel.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "FutilePro";
+  src: url("./FutilePro.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+} */
+
+@font-face {
+  font-family: "MatchupPro";
+  src: url("./MatchupPro.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* @import url('https://fonts.googleapis.com/css?family=Mrs+Sheppards&display=swap'); */
+
+@font-face {
+  font-family: "Vontens";
+  src: url("./Vontens.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
