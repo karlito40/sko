@@ -1,6 +1,9 @@
 const Game = require('./Game');
 const User = require('./User');
+const IoC = require('./IoC');
 const io = require('socket.io')(3006);
+
+IoC('io', io);
 
 io.on('connection', function(socket) {
   console.log('client connect - ', socket.id);
@@ -17,17 +20,16 @@ io.on('connection', function(socket) {
 
   socket.on('user.create', (form) => {
     console.log('client create user - ', socket.id);
-    const user = new User(socket);
-    user.create(form);
+    const user = new User(socket, form);
+    user.save();
   });
 
   socket.on('game.join', () => {
     console.log('client join matchmaking - ', socket.id);
     
     const rooms = Game.rooms(socket);
-    let room = rooms.find(room => room.length < 2 && !room.game.fullAt);
-    
-    const game = (room) ? room.game : new Game(io);
+    const room = rooms.find(room => room.length < 2 && !room.game.fullAt);
+    const game = (room) ? room.game : new Game();
     game.addUser(socket.user);
   });
 

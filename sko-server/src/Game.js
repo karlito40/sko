@@ -1,5 +1,6 @@
 const uuid = require('uuid/v1');
 const { random } = require('lodash');
+const IoC = require('./IoC');
 
 module.exports = class Game {
   static rooms (socket) {
@@ -7,8 +8,7 @@ module.exports = class Game {
       .filter((room) => room.game);
   }
 
-  constructor (io) {
-    this.io = io;
+  constructor () {
     this.id = 'game.' + uuid();
     this.users = [];
     this.createdAt = Date.now();
@@ -30,7 +30,7 @@ module.exports = class Game {
     if(this.users.length === 2) {
       this.fullAt = Date.now();
 
-      this.io.to(this.id).emit('change', {
+      IoC('io').to(this.id).emit('change', {
         searching: false,
         game: this.toJSON()
       })
@@ -41,7 +41,7 @@ module.exports = class Game {
     this.startedAt = Date.now();
     this.fireAt = Date.now() + parseInt(random(6, 9, true) * 1000);
     
-    this.io.to(this.id).emit('change', {
+    IoC('io').to(this.id).emit('change', {
       game: {
         startedAt: this.startedAt,
         fireAt: this.fireAt
@@ -56,7 +56,7 @@ module.exports = class Game {
     this.winnerId = (isFalseStart) ? this.getOpponent(attacker).id : attacker.id;
     this.completedAt = Date.now();
 
-    this.io.to(this.id).emit('change', {
+    IoC('io').to(this.id).emit('change', {
       game: {
         reactScore,
         winnerId: this.winnerId,
