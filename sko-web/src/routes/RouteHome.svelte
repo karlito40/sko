@@ -73,7 +73,7 @@ onMount(() => goTo(SceneSplashScreen));
 </script>
 
 <svelte:head>
-	<title>Samurai Kirby !</title>
+  <title>Samurai Kirby !</title>
 </svelte:head>
 
 <div class="RouteHome">

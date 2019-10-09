@@ -18,14 +18,14 @@ export let qty = 1;
 
   &--2 {
     background-position: -324px -4px;
-	  width: 47px;
-	  height: 52px;
+    width: 47px;
+    height: 52px;
   }
   
   &--2 {
     background-position: -324px -4px;
-	  width: 47px;
-	  height: 52px;
+    width: 47px;
+    height: 52px;
   }
 }
 </style>

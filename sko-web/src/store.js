@@ -18,13 +18,3 @@ export default {
     game: undefined
   })),
 };
-
-/*
-battle:{ 
-  "id": "battle.2", 
-  "startedAt": 1556882621529, 
-  "actived": false, 
-  "winner": "zakQc4_IIO20gK36AAAI", 
-  "completedAt": 1556882622202 
-} 
-*/

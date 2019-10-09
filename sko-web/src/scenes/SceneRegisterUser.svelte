@@ -19,7 +19,7 @@ function onSubmit() {
 </script>
 
 <form class="SceneRegisterUser" on:submit|preventDefault={onSubmit}>
-	<input 
+  <input 
     type="text"
     placeholder="Enter name..."
     bind:value={form.name}
