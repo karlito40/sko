@@ -1,19 +1,25 @@
 const uuid = require('uuid/v1');
 
 module.exports = class User {
-  constructor (socket, { name, heroId }) {
-    this.socket = socket;
-    this.socket.user = this;
-
-    this.id = uuid();
-    this.name = name;
-    this.heroId = heroId;
+  static enhanceSocket (socket) {
+    socket.setUser = (user) => {
+      socket.user = user;
+      socket.emit('change', { me: user });
+    }
+    socket.getUser = () => socket.user;
   }
 
-  save () {
-    console.log('user create - ', this.toJSON());
-    this.socket.nsp.emit('user.created', this);
-    this.socket.emit('change', { me: this });
+  static make(form) {
+    return new User({
+      id: uuid(),
+      ...form
+    });
+  }
+
+  constructor ({ id, name, heroId }) {
+    this.id = id;
+    this.name = name;
+    this.heroId = heroId;
   }
 
   ready () { this.readyAt = Date.now(); }

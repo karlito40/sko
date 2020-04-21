@@ -1,0 +1,29 @@
+{
+  "name": "sko",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gameinstall": "concurrently \"npm run install:*\"",
+    "install:server": "cd sko-server && npm install",
+    "install:web": "cd sko-web && npm install",
+    "start": "concurrently \"npm run start:*\"",
+    "start:server": "cd sko-server && npm run start",
+    "start:web": "cd sko-web && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karlito40/sko.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/karlito40/sko/issues"
+  },
+  "homepage": "https://github.com/karlito40/sko#readme",
+  "devDependencies": {
+    "concurrently": "^5.1.0"
+  }
+}

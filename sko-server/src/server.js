@@ -1,13 +1,16 @@
 const Game = require('./Game');
 const User = require('./User');
-const IoC = require('./IoC');
+const { IoC } = require('./libs');
 const io = require('socket.io')(3006);
 
 IoC('io', io);
 
 io.on('connection', function(socket) {
+  Game.enhanceSocket(socket);
+  User.enhanceSocket(socket);
+
   console.log('client connect - ', socket.id);
-  updatePresence(io, socket);
+  updatePresence(socket);
 
   socket.on('reconnect', (attemptNumber) => {
     console.log('client reconnect - ', socket.id);
@@ -15,22 +18,24 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', () => {
     console.log('client disconnect - ', socket.id);
-    updatePresence(io, socket);
+    updatePresence(socket);
   });
 
-  socket.on('user.create', (form) => {
+  socket.on('user.create', async (form) => {
     console.log('client create user - ', socket.id);
-    const user = new User(socket, form);
-    user.save();
+
+    const user = await User.make(form);
+    socket.setUser(user);
   });
 
   socket.on('game.join', () => {
     console.log('client join matchmaking - ', socket.id);
     
-    const rooms = Game.rooms(socket);
+    const rooms = Game.getRooms(socket);
     const room = rooms.find(room => room.length < 2 && !room.game.fullAt);
-    const game = (room) ? room.game : new Game();
-    game.addUser(socket.user);
+    const game = (room) ? room.game : Game.make({ createdAt: Date.now() });
+    
+    socket.joinGame(game);
   });
 
   // socket.on('game.leave', (ack) => {
@@ -40,25 +45,29 @@ io.on('connection', function(socket) {
   // });
 
   socket.on('game.ready', () => {
-    console.log('game ready for user -', socket.user.id);
-    socket.user.ready();
+    console.log('game ready for user -', socket.getUser().id);
+    const user = socket.getUser();
+    const game = socket.getGame();
+    
+    user.ready();
 
-    if(socket.game.isReady()) {
-      socket.game.start();
+    if(game.isReady()) {
+      game.start();
     }
   });
 
   socket.on('game.attack', () => {
     console.log('client attack - ', socket.id);
-    if(socket.game && !socket.game.hasWinner()) {
-      socket.game.attackBy(socket.user);
+    const game = socket.getGame();
+    if(game && !game.hasWinner()) {
+      game.attackBy(socket.getUser());
     }
   });
 });
 
-function updatePresence(io, socket) {
+function updatePresence(socket) {
   socket.adapter.clients((error, clients) => {
     if (error) throw error;
-    io.emit('change', { nbPlayers: clients.length });
+    socket.nsp.emit('change', { nbPlayers: clients.length });
   });
 }
