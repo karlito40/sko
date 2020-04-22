@@ -1,14 +1,8 @@
 _Les autres README servent uniquement si vous avez besoin de lancer le front et le serveur en toute autonomie_
 
-## Instructions pour bien démarrer ( ^_^)／
+## Instructions pour installer le jeu ( ^_^)／
 
-Tout d'abord installez le bordel:
-
-```
-npm install
-```
-
-Puis faites un:
+Placez vous à la racine du projet puis lancez cette commande:
 
 ```
 npm run gameinstall
