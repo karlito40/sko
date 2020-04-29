@@ -60,7 +60,9 @@ io.on('connection', function(socket) {
     console.log('client attack - ', socket.id);
     const game = socket.getGame();
     if(game && !game.hasWinner()) {
-      game.attackBy(socket.getUser());
+      const attacker = socket.getUser();
+      const target = game.getOpponent(attacker);
+      game.handleAttack(attacker, target);
     }
   });
 });

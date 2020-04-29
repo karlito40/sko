@@ -67,11 +67,11 @@ module.exports = class Game {
     });
   }
 
-  attackBy (attacker) {
+  handleAttack (attackingUser, targetedUser) {
     const reactTime = Date.now() - this.fireAt;
     const isFalseStart = reactTime < 0;
     const reactScore = (!isFalseStart) ? reactTime / 10 : 0;
-    this.winnerId = (isFalseStart) ? this.getOpponent(attacker).id : attacker.id;
+    this.winnerId = (isFalseStart) ? targetedUser.id : attackingUser.id;
     this.completedAt = Date.now();
 
     IoC('io').to(this.id).emit('change', {
