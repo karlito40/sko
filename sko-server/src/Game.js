@@ -84,7 +84,7 @@ module.exports = class Game {
   }
 
   getOpponent (user) {
-    return this.users.find((userId) => userId !== user.id);
+    return this.users.find((u) => u.id !== user.id);
   }
 
   isReady () {
