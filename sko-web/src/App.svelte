@@ -77,7 +77,7 @@ function renderRoute(m, obj) {
   width: 100%;
   height: 100%;
   padding: 30px;
-  background: url('/background.png') no-repeat;
+  background: url('/background.png') center center;
   background-size: cover;
 }
 </style>
