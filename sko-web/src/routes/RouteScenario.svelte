@@ -13,7 +13,7 @@ let score = 0;
 let tl;
 let winner, loser;
 
-const game = {
+let game = {
   state: 'running',
   me: {
     hero: {
